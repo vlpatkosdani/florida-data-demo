@@ -5,12 +5,12 @@
     "feature_from_branch": "feature/{feature}",
     "managed_marker": "managed-by: florida-data-demo feature automation"
   },
-  "capacity_name": "<CAPACITY_NAME>",
+  "capacity_name": "Trial-20261110T093500Z-vhNIN2bjwEuglRS2Upik6Q",
   "git": {
     "provider": "GitHub",
     "owner": "vlpatkosdani",
     "repository": "florida-data-demo",
-    "connection_id": "<GITHUB_SOURCE_CONTROL_CONNECTION_ID>"
+    "connection_id": "3bbb2c6a-44b9-41df-ab66-b11fe7231a7d"
   },
   "permissions": [
     { "identity_object_id": "<DEVELOPERS_GROUP_OBJECT_ID>", "role": "Admin" }
@@ -30,7 +30,7 @@
   },
   "shared_storage": {
     "_comment": "Feature workspaces have no Store layer; they read the PPE lakehouse.",
-    "workspace": "Sales-Store-PPE",
+    "workspace": "Florida-Store-PPE",
     "lakehouse": "Store_LH"
   }
 }

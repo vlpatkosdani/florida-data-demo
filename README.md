@@ -9,9 +9,9 @@ and with code (fab CLI, fabric-cicd).
 
 ```
 solution/
-  store/        Store_LH lakehouse                     -> Sales-Store-PPE / -PROD
-  engineering/  notebooks, variable library, pipeline  -> Sales-Engineering-PPE / -PROD
-  serve/        SM_Sales, RPT_Sales                    -> Sales-Serve-PPE / -PROD
+  store/        Store_LH lakehouse                     -> Florida-Store-PPE / -PROD
+  engineering/  notebooks, variable library, pipeline  -> Florida-Engineering-PPE / -PROD
+  serve/        SM_Sales, RPT_Sales                    -> Florida-Serve-PPE / -PROD
 automation/
   resources/environments/feature.json   feature workspace recipe
   scripts/                              deploy + feature maintenance (coming)
@@ -36,4 +36,4 @@ fab deploy --config solution/engineering/config.yml --target_env PPE
 ## Credits
 - Microsoft Fabric blog: "Optimizing for CI/CD in Microsoft Fabric"
 - Peer Gronnerup: "Automating Feature Workspace maintenance in Microsoft Fabric"
-- Kevin Chant: "Deploy Smarter: Enterprise CI/CD in Microsoft Fabric using Fabric CLI and fabric-cicd"
+- Daniel Patkos & Kevin Chant: "Deploy Smarter: Enterprise CI/CD in Microsoft Fabric using Fabric CLI and fabric-cicd"

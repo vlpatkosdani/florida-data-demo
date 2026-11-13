@@ -17,25 +17,25 @@ find_replace:
   # Direct Lake on SQL endpoint
   - find_value: "__PPE_STORE_LH_SQL_CONNECTION_STRING__"
     replace_value:
-      PPE: "$workspace.Sales-Store-PPE.$items.Lakehouse.Store_LH.$sqlendpoint"
-      PROD: "$workspace.Sales-Store-PROD.$items.Lakehouse.Store_LH.$sqlendpoint"
+      PPE: "$workspace.Florida-Store-PPE.$items.Lakehouse.Store_LH.$sqlendpoint"
+      PROD: "$workspace.Florida-Store-PROD.$items.Lakehouse.Store_LH.$sqlendpoint"
     item_type: "SemanticModel"
 
   - find_value: "__PPE_STORE_LH_SQL_ENDPOINT_ID__"
     replace_value:
-      PPE: "$workspace.Sales-Store-PPE.$items.Lakehouse.Store_LH.$sqlendpointid"
-      PROD: "$workspace.Sales-Store-PROD.$items.Lakehouse.Store_LH.$sqlendpointid"
+      PPE: "$workspace.Florida-Store-PPE.$items.Lakehouse.Store_LH.$sqlendpointid"
+      PROD: "$workspace.Florida-Store-PROD.$items.Lakehouse.Store_LH.$sqlendpointid"
     item_type: "SemanticModel"
 
   # Direct Lake on OneLake
-  - find_value: "__PPE_STORE_WORKSPACE_ID__"
+  - find_value: "b64d3ac2-7a25-4b7a-80ee-7dabc987cac9"
     replace_value:
-      PPE: "$workspace.Sales-Store-PPE.$id"
-      PROD: "$workspace.Sales-Store-PROD.$id"
+      PPE: "$workspace.Florida-Store-PPE.$id"
+      PROD: "$workspace.Florida-Store-PROD.$id"
     item_type: "SemanticModel"
 
   - find_value: "__PPE_STORE_LH_ID__"
     replace_value:
-      PPE: "$workspace.Sales-Store-PPE.$items.Lakehouse.Store_LH.$id"
-      PROD: "$workspace.Sales-Store-PROD.$items.Lakehouse.Store_LH.$id"
+      PPE: "$workspace.Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
+      PROD: "$workspace.Florida-Store-PROD.$items.Lakehouse.Store_LH.$id"
     item_type: "SemanticModel"

@@ -6,24 +6,24 @@
 # Store_LH as the default lakehouse in a feature workspace, Fabric writes the
 # PPE lakehouse and workspace GUIDs into the notebook META block.
 #
-# The lakehouse lives in a different workspace (Sales-Store-*), so the
+# The lakehouse lives in a different workspace (Florida-Store-*), so the
 # replacement uses the cross-workspace form:
 #   $workspace.<workspace name>.$items.<type>.<item name>.$<attribute>
 # A plain $items.Lakehouse.Store_LH.$id would look in the Engineering
 # workspace and fail.
 #
-# TODO (Stage 3): replace the two __PPE_*__ tokens with real GUIDs once
-# Sales-Store-PPE and Store_LH exist.
+# TODO (Stage 4): replace __PPE_STORE_LH_ID__ with the real GUID once
+# Store_LH exists in Florida-Store-PPE (b64d3ac2-... is that workspace).
 
 find_replace:
   - find_value: "__PPE_STORE_LH_ID__"
     replace_value:
-      PPE: "$workspace.Sales-Store-PPE.$items.Lakehouse.Store_LH.$id"
-      PROD: "$workspace.Sales-Store-PROD.$items.Lakehouse.Store_LH.$id"
+      PPE: "$workspace.Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
+      PROD: "$workspace.Florida-Store-PROD.$items.Lakehouse.Store_LH.$id"
     item_type: "Notebook"
 
-  - find_value: "__PPE_STORE_WORKSPACE_ID__"
+  - find_value: "b64d3ac2-7a25-4b7a-80ee-7dabc987cac9"
     replace_value:
-      PPE: "$workspace.Sales-Store-PPE.$id"
-      PROD: "$workspace.Sales-Store-PROD.$id"
+      PPE: "$workspace.Florida-Store-PPE.$id"
+      PROD: "$workspace.Florida-Store-PROD.$id"
     item_type: "Notebook"

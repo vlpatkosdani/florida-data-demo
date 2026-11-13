@@ -2,8 +2,8 @@
 # Feature workspaces never get this layer; they read the PPE lakehouse.
 core:
   workspace:
-    PPE: Sales-Store-PPE
-    PROD: Sales-Store-PROD
+    PPE: Florida-Store-PPE
+    PROD: Florida-Store-PROD
   repository_directory: .
   item_types_in_scope:
     - Lakehouse
