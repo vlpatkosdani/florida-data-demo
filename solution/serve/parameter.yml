@@ -1,0 +1,41 @@
+# fabric-cicd 1.4.0 parameter file: Serve layer.
+#
+# SM_Sales reads Store_LH, which lives in the Store workspace. When the model
+# is authored in a feature workspace it points at the PPE lakehouse, so the
+# committed TMDL contains PPE values. These entries swap them per environment.
+#
+# Which entries you need depends on how SM_Sales connects:
+#   Direct Lake on SQL endpoint -> SQL connection string + SQL endpoint ID
+#   Direct Lake on OneLake      -> workspace ID + lakehouse ID in the OneLake URL
+# Keep the pair that matches the model, delete the other.
+#
+# TODO (Stage 4): replace the __PPE_*__ tokens with the values found in
+# solution/serve/SM_Sales.SemanticModel/definition/expressions.tmdl after the
+# model is first committed.
+
+find_replace:
+  # Direct Lake on SQL endpoint
+  - find_value: "__PPE_STORE_LH_SQL_CONNECTION_STRING__"
+    replace_value:
+      PPE: "$workspace.Sales-Store-PPE.$items.Lakehouse.Store_LH.$sqlendpoint"
+      PROD: "$workspace.Sales-Store-PROD.$items.Lakehouse.Store_LH.$sqlendpoint"
+    item_type: "SemanticModel"
+
+  - find_value: "__PPE_STORE_LH_SQL_ENDPOINT_ID__"
+    replace_value:
+      PPE: "$workspace.Sales-Store-PPE.$items.Lakehouse.Store_LH.$sqlendpointid"
+      PROD: "$workspace.Sales-Store-PROD.$items.Lakehouse.Store_LH.$sqlendpointid"
+    item_type: "SemanticModel"
+
+  # Direct Lake on OneLake
+  - find_value: "__PPE_STORE_WORKSPACE_ID__"
+    replace_value:
+      PPE: "$workspace.Sales-Store-PPE.$id"
+      PROD: "$workspace.Sales-Store-PROD.$id"
+    item_type: "SemanticModel"
+
+  - find_value: "__PPE_STORE_LH_ID__"
+    replace_value:
+      PPE: "$workspace.Sales-Store-PPE.$items.Lakehouse.Store_LH.$id"
+      PROD: "$workspace.Sales-Store-PROD.$items.Lakehouse.Store_LH.$id"
+    item_type: "SemanticModel"

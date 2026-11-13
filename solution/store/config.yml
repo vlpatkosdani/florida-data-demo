@@ -1,0 +1,20 @@
+# fabric-cicd 1.4.0 deployment config: Store layer (lakehouse only).
+# Feature workspaces never get this layer; they read the PPE lakehouse.
+core:
+  workspace:
+    PPE: Sales-Store-PPE
+    PROD: Sales-Store-PROD
+  repository_directory: .
+  item_types_in_scope:
+    - Lakehouse
+
+publish:
+  skip:
+    PPE: false
+    PROD: false
+
+unpublish:
+  # Never let a deployment delete a lakehouse: data does not come back.
+  skip:
+    PPE: true
+    PROD: true

@@ -1,0 +1,29 @@
+# fabric-cicd 1.4.0 parameter file: Engineering layer.
+#
+# Notebooks get their storage location from vl_settings (variable library),
+# so most environment values are handled by value sets, not by this file.
+# This file covers the one thing value sets can't: when a developer attaches
+# Store_LH as the default lakehouse in a feature workspace, Fabric writes the
+# PPE lakehouse and workspace GUIDs into the notebook META block.
+#
+# The lakehouse lives in a different workspace (Sales-Store-*), so the
+# replacement uses the cross-workspace form:
+#   $workspace.<workspace name>.$items.<type>.<item name>.$<attribute>
+# A plain $items.Lakehouse.Store_LH.$id would look in the Engineering
+# workspace and fail.
+#
+# TODO (Stage 3): replace the two __PPE_*__ tokens with real GUIDs once
+# Sales-Store-PPE and Store_LH exist.
+
+find_replace:
+  - find_value: "__PPE_STORE_LH_ID__"
+    replace_value:
+      PPE: "$workspace.Sales-Store-PPE.$items.Lakehouse.Store_LH.$id"
+      PROD: "$workspace.Sales-Store-PROD.$items.Lakehouse.Store_LH.$id"
+    item_type: "Notebook"
+
+  - find_value: "__PPE_STORE_WORKSPACE_ID__"
+    replace_value:
+      PPE: "$workspace.Sales-Store-PPE.$id"
+      PROD: "$workspace.Sales-Store-PROD.$id"
+    item_type: "Notebook"

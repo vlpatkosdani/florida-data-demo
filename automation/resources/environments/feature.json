@@ -1,0 +1,36 @@
+{
+  "_comment": "Recipe for feature workspaces. Idea and structure after Peer Gronnerup's FabricAutomation; rebuilt for this demo. Values in <> are filled in Stage 3.",
+  "naming": {
+    "pattern": "*feature-{feature}-{layer}",
+    "feature_from_branch": "feature/{feature}",
+    "managed_marker": "managed-by: florida-data-demo feature automation"
+  },
+  "capacity_name": "<CAPACITY_NAME>",
+  "git": {
+    "provider": "GitHub",
+    "owner": "vlpatkosdani",
+    "repository": "florida-data-demo",
+    "connection_id": "<GITHUB_SOURCE_CONTROL_CONNECTION_ID>"
+  },
+  "permissions": [
+    { "identity_object_id": "<DEVELOPERS_GROUP_OBJECT_ID>", "role": "Admin" }
+  ],
+  "layers": {
+    "Engineering": {
+      "git_directory": "/solution/engineering",
+      "spark_settings": {
+        "pool": {
+          "starterPool": { "maxNodeCount": 1, "maxExecutors": 1 }
+        }
+      }
+    },
+    "Serve": {
+      "git_directory": "/solution/serve"
+    }
+  },
+  "shared_storage": {
+    "_comment": "Feature workspaces have no Store layer; they read the PPE lakehouse.",
+    "workspace": "Sales-Store-PPE",
+    "lakehouse": "Store_LH"
+  }
+}

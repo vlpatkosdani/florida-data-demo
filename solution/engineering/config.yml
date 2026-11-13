@@ -1,0 +1,19 @@
+# fabric-cicd 1.4.0 deployment config: Engineering layer.
+# Same file drives both `python automation/scripts/deploy.py` and
+# `fab deploy --config solution/engineering/config.yml --target_env PPE`.
+core:
+  workspace:
+    PPE: Sales-Engineering-PPE
+    PROD: Sales-Engineering-PROD
+  repository_directory: .
+  parameter: parameter.yml
+  item_types_in_scope:
+    - Notebook
+    - DataPipeline
+    - VariableLibrary
+
+unpublish:
+  # PPE mirrors the ppe branch exactly; PROD never loses items automatically.
+  skip:
+    PPE: false
+    PROD: true
