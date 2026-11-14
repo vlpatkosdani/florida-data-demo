@@ -55,4 +55,7 @@ Source for nb_ingest_sales: release assets of https://github.com/vlpatkosdani/se
 1. Scaffold: done. 2. Auth check: done. 3. Workspaces: done.
 4. Store_LH, vl_settings, notebooks deployed to PPE and run (tables: sales_raw, dim_*, fact_sales). PROD not deployed yet.
    Waiting on Daniel: SM_Sales + RPT_Sales authored in Fabric, dp_daily pipeline.
-5. Workflows: next. 6. reset_demo.py.
+5. Workflows written. feature_maintenance tested locally as SPN: create workspace, marker, ACL, Spark, delete all OK.
+   BLOCKER: SPN git/connect -> 403 FeatureNotAvailable "tenant administrator has not enabled the Git Integration
+   feature". Git integration tenant settings must include the SPN (or a group it is in).
+6. reset_demo.py.

@@ -1,5 +1,5 @@
 {
-  "_comment": "Recipe for feature workspaces. Idea and structure after Peer Gronnerup's FabricAutomation; rebuilt for this demo. Values in <> are filled in Stage 3.",
+  "_comment": "Recipe for feature workspaces. Idea and structure after Peer Gronnerup's FabricAutomation; rebuilt for this demo.",
   "naming": {
     "pattern": "*feature-{feature}-{layer}",
     "feature_from_branch": "feature/{feature}",
@@ -13,7 +13,7 @@
     "connection_id": "3bbb2c6a-44b9-41df-ab66-b11fe7231a7d"
   },
   "permissions": [
-    { "identity_object_id": "<DEVELOPERS_GROUP_OBJECT_ID>", "role": "Admin" }
+    { "_who": "Daniel Patkos (user)", "identity_object_id": "caff5106-0728-4c5a-b1fe-1904c514071b", "role": "Admin" }
   ],
   "layers": {
     "Engineering": {

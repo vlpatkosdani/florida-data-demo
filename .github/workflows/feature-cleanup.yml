@@ -1,0 +1,39 @@
+name: feature-cleanup
+
+# Squash-merging a feature PR into ppe (or deleting the branch) removes its workspaces.
+on:
+  pull_request:
+    types: [closed]
+    branches: [ppe]
+  delete:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Feature branch, e.g. feature/margin-kpi"
+        required: true
+
+jobs:
+  cleanup:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && github.event.pull_request.merged && startsWith(github.head_ref, 'feature/')) ||
+      (github.event_name == 'delete' && github.event.ref_type == 'branch' && startsWith(github.event.ref, 'feature/'))
+    runs-on: ubuntu-latest
+    concurrency:
+      group: feature-${{ inputs.branch || github.head_ref || github.event.ref }}
+    env:
+      SPN_TENANT_ID: ${{ vars.SPN_TENANT_ID }}
+      SPN_CLIENT_ID: ${{ vars.SPN_CLIENT_ID }}
+      SPN_CLIENT_SECRET: ${{ secrets.SPN_CLIENT_SECRET }}
+      BRANCH: ${{ inputs.branch || github.head_ref || github.event.ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Delete feature workspaces (only ones carrying the managed marker)
+        run: python automation/scripts/fabric_feature_maintenance.py delete --branch "$BRANCH"

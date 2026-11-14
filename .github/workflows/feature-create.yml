@@ -1,0 +1,32 @@
+name: feature-create
+
+# Creating a feature/* branch creates one Git-connected workspace per layer.
+on:
+  create:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Feature branch, e.g. feature/margin-kpi"
+        required: true
+
+concurrency:
+  group: feature-${{ inputs.branch || github.ref_name }}
+
+jobs:
+  create:
+    if: github.event_name == 'workflow_dispatch' || (github.ref_type == 'branch' && startsWith(github.ref_name, 'feature/'))
+    runs-on: ubuntu-latest
+    env:
+      SPN_TENANT_ID: ${{ vars.SPN_TENANT_ID }}
+      SPN_CLIENT_ID: ${{ vars.SPN_CLIENT_ID }}
+      SPN_CLIENT_SECRET: ${{ secrets.SPN_CLIENT_SECRET }}
+      BRANCH: ${{ inputs.branch || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Create feature workspaces
+        run: python automation/scripts/fabric_feature_maintenance.py create --branch "$BRANCH"
