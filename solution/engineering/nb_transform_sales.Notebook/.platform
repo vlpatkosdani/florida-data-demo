@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb_transform_sales",
+    "description": "Build fact_sales from sales_raw"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7a97dfa3-ff65-49f4-bff0-65209e0a3586"
+  }
+}

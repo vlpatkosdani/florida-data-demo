@@ -12,11 +12,10 @@
 # A plain $items.Lakehouse.Store_LH.$id would look in the Engineering
 # workspace and fail.
 #
-# TODO (Stage 4): replace __PPE_STORE_LH_ID__ with the real GUID once
-# Store_LH exists in Florida-Store-PPE (b64d3ac2-... is that workspace).
+# find_value entries are the PPE IDs: Store_LH lakehouse and Florida-Store-PPE workspace.
 
 find_replace:
-  - find_value: "__PPE_STORE_LH_ID__"
+  - find_value: "4d9757c7-4967-443c-a864-5abf9a439d47"
     replace_value:
       PPE: "$workspace.Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
       PROD: "$workspace.Florida-Store-PROD.$items.Lakehouse.Store_LH.$id"

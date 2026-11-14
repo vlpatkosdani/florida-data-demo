@@ -24,6 +24,11 @@ feature workspace automation (rebuilt with credit, not copied).
 - Cross-workspace dynamic values: `$workspace.<ws name>.$items.<Type>.<name>.$id|$sqlendpoint|$sqlendpointid`.
   The lakehouse is in Florida-Store-*, so Engineering/Serve parameters must use this form.
 - VariableLibrary: fabric-cicd activates the value set whose name equals the environment, so value sets are named `PPE` and `PROD`.
+- Notebook `.py` source: write `%run <notebook>` as a plain line. `# MAGIC %run ...` gets mangled on import
+  (line doubled without newline) and the Spark session dies with System_Cancelled_Session_Statements_Failed.
+- `fab import` of a `.py` notebook needs `--format .py`.
+- OneLake name-based paths work: `abfss://Florida-Store-PPE@onelake.dfs.fabric.microsoft.com/Store_LH.Lakehouse/...`.
+- PPE unpublish is on: anything in an Engineering/Serve PPE workspace that isn't in the repo gets deleted on deploy.
 
 ## Environment (no secrets here; the SPN secret lives only in GitHub environment secrets / local env vars)
 - Tenant: a5ff2eab-e6e7-498b-887b-05a86e1c7a97. Capacity: Trial-20261110T093500Z-vhNIN2bjwEuglRS2Upik6Q (FTL64, West Europe).
@@ -47,5 +52,7 @@ These seven workspaces were created or approved for this repo. Any other workspa
 Source for nb_ingest_sales: release assets of https://github.com/vlpatkosdani/semantic-model-refresh-test/releases (any release is fine).
 
 ## Stage status
-1. Scaffold: done. 2. Auth check: done. 3. Workspaces: done. 4. Notebooks + variable library: next.
-5. Workflows. 6. reset_demo.py.
+1. Scaffold: done. 2. Auth check: done. 3. Workspaces: done.
+4. Store_LH, vl_settings, notebooks deployed to PPE and run (tables: sales_raw, dim_*, fact_sales). PROD not deployed yet.
+   Waiting on Daniel: SM_Sales + RPT_Sales authored in Fabric, dp_daily pipeline.
+5. Workflows: next. 6. reset_demo.py.

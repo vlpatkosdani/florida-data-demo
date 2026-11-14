@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "VariableLibrary",
+    "displayName": "vl_settings",
+    "description": "Environment settings shared by all notebooks"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f4a829cc-275f-43c3-bd00-c9f3d82dbf03"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/variableLibrary/definition/variables/1.0.0/schema.json",
+  "variables": [
+    { "name": "store_workspace", "note": "Workspace that holds Store_LH. Feature workspaces use the default (PPE).", "type": "String", "value": "Florida-Store-PPE" },
+    { "name": "store_lakehouse", "note": "Lakehouse name", "type": "String", "value": "Store_LH" },
+    { "name": "source_release", "note": "GitHub release tag of the demo data", "type": "String", "value": "data-1m-v1" },
+    { "name": "source_base_url", "note": "Release download root", "type": "String", "value": "https://github.com/vlpatkosdani/semantic-model-refresh-test/releases/download" }
+  ]
+}

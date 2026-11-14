@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb_ingest_sales",
+    "description": "Load Contoso release files into Store_LH"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "831c192e-ec94-4737-a96a-7640f6c11ecc"
+  }
+}
