@@ -1,0 +1,4 @@
+# Keep LF everywhere so Fabric Git integration and VS Code show identical, clean diffs.
+* text=auto eol=lf
+*.parquet binary
+*.png binary
