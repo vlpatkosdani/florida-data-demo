@@ -5,3 +5,4 @@ tmp/
 .env
 *.log
 .deployment_results/
+.vscode/
