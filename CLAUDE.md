@@ -13,6 +13,11 @@ feature workspace automation (rebuilt with credit, not copied).
   commits them via Git integration. Claude writes everything else.
 - Show tenant-changing commands (create/delete workspace, ACL, git connect) before running them.
 
+## Branch rules (GitHub rulesets)
+- ppe (default): ppe_ruleset, PR required, squash only, no delete/force push.
+- main: main_ruleset, PR required, merge commits only (ppe -> main promotion keeps history aligned).
+- Never push directly; use a branch + PR. `feature/*` branches trigger feature-create, so use `chore/*` for repo-only changes.
+
 ## Layout
 - `solution/<layer>/` = one Git-integration folder per layer (store, engineering, serve), each with
   `config.yml` + `parameter.yml` for fabric-cicd.
@@ -43,7 +48,7 @@ feature workspace automation (rebuilt with credit, not copied).
 
 | Workspace | ID | Role |
 |---|---|---|
-| _Florida Data & AI - Demo | 5e42287f-8c52-4a64-b51f-117e0a6dfdd9 | DEV for clicks demos (D1/D2); Git: main, /solution/serve |
+| _Florida Data & AI - Demo | 5e42287f-8c52-4a64-b51f-117e0a6dfdd9 | DEV for clicks demos (D1); Git: ppe, /solution/serve (protected: commits go via branch out + PR) |
 | _Florida-Store-PPE | b64d3ac2-7a25-4b7a-80ee-7dabc987cac9 | fabric-cicd target |
 | _Florida-Store-PROD | 64cf5501-eb3d-4ead-bc83-4b223d81b91a | fabric-cicd target |
 | _Florida-Engineering-PPE | 3af681c9-0c95-4d8c-b35f-decad1771f86 | fabric-cicd target |
