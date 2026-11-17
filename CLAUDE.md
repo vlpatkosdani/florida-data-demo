@@ -75,7 +75,9 @@ Source for nb_ingest_sales: release assets of https://github.com/vlpatkosdani/se
 4. Store_LH, vl_settings, notebooks deployed to PPE and run (tables: sales_raw, dim_*, fact_sales). PROD not deployed yet.
    Waiting on Daniel: SM_Sales + RPT_Sales authored in Fabric, dp_daily pipeline.
 5. Workflows written. feature_maintenance tested locally as SPN: create workspace, marker, ACL, Spark, delete all OK.
-   BLOCKER: SPN git/connect -> 403 FeatureNotAvailable "tenant administrator has not enabled the Git Integration
-   feature". Git integration tenant settings must include the SPN (or a group it is in).
+   SPN may NOT use Git integration (403 FeatureNotAvailable; tenant setting, Daniel can't change it).
+   Design: feature-create (SPN) creates/configures workspaces; `fabric_feature_maintenance.py connect`
+   (user login) does Git connect + sync; feature-cleanup (SPN) deletes. Full cycle rehearsed 17 Nov.
+   deploy.py sets Anonymous Web credentials + refreshes semantic models after the serve layer.
 D2/D3/D4 set up and rehearsed: see docs/demo-runbook.md. D2 rule must be created in the UI once.
 6. reset_demo.py.

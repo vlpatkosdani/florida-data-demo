@@ -77,3 +77,37 @@ fab rm "_Florida-Engineering-Demo.Workspace" -f
 ```
 
 Expected runtimes: steps 3 and 4 about 15 seconds each.
+
+## D5: Feature workspaces + fabric-cicd release (both, about 12 minutes)
+
+Rehearsed 17 Nov 2026 with a `feature/smoke-test` branch. The service principal may not use Git
+integration in this tenant (tenant setting, can't be changed), so Git connect is one command you run
+yourself. Say it out loud: it's a real-world gotcha.
+
+```powershell
+# 1. Branch from ppe and push: GitHub Actions 'feature-create' starts (~1 min)
+git switch ppe; git pull
+git switch -c feature/avg-order-value
+git push -u origin feature/avg-order-value
+```
+
+2. While it runs, narrate `automation/resources/environments/feature.json` (naming, capacity, layers,
+   Spark limits, ACLs). The run summary shows the next command.
+3. Fabric: `*feature-avg-order-value-Engineering` and `-Serve` appear at the top of the list.
+
+```powershell
+# 4. Connect both workspaces to their Git folders on the feature branch and sync (~20 s, your login)
+python automation\scripts\fabric_feature_maintenance.py connect --branch feature/avg-order-value
+```
+
+5. In `*feature-avg-order-value-Serve`, open SM_Sales and add
+   `Avg Order Value = DIVIDE ( [Sales Amount], [# Orders] )`. Source control → Compare → Commit.
+   (Optional, Engineering: add Margin % in nb_transform_sales at the `# DEMO` marker.)
+6. VS Code: `git pull`, show the same TMDL diff, open the PR into `ppe`.
+7. Squash merge: `deploy-ppe` publishes with fabric-cicd and refreshes SM_Sales (Anonymous credentials
+   set by deploy.py); `feature-cleanup` deletes the feature workspaces. Show both runs side by side.
+8. Open RPT_Sales in `_Florida-Serve-PPE` with the new measure.
+9. Promote to main: PR `ppe` → `main`, merge; `deploy-prod` waits for approval in the `prod`
+   environment; approve live; PROD updates and refreshes with `data-10m-v1`.
+
+Backup: pre-create the feature branch and run step 4 before the session.
