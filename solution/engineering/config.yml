@@ -5,6 +5,8 @@ core:
   workspace:
     PPE: Florida-Engineering-PPE
     PROD: Florida-Engineering-PROD
+    DEV: Florida-Engineering-DEV      # seeds the deployment pipeline demo (D2)
+    DEMO: Florida-Engineering-Demo    # created and removed live in D3/D4
   repository_directory: .
   parameter: parameter.yml
   item_types_in_scope:
@@ -17,3 +19,5 @@ unpublish:
   skip:
     PPE: false
     PROD: true
+    DEV: true
+    DEMO: true

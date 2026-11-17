@@ -35,7 +35,7 @@ def get_credential():
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--environment", required=True, choices=["PPE", "PROD"])
+    parser.add_argument("--environment", required=True, choices=["PPE", "PROD", "DEV", "TEST", "DEMO"])
     parser.add_argument("--layers", nargs="+", choices=LAYERS, default=LAYERS)
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
@@ -46,6 +46,9 @@ def main() -> int:
     credential = get_credential()
     for layer in [l for l in LAYERS if l in args.layers]:
         config = REPO_ROOT / "solution" / layer / "config.yml"
+        if f"    {args.environment}:" not in config.read_text(encoding="utf-8"):
+            print(f"\n=== {layer}: no {args.environment} workspace in config, skipping")
+            continue
         print(f"\n=== {layer} -> {args.environment}")
         deploy_with_config(
             config_file_path=str(config),

@@ -33,9 +33,15 @@ def run(args, check=True):
 
 
 def login_from_env():
-    """Log in as the service principal when SPN_* env vars are present (CI)."""
+    """Log in as the service principal, but only on a GitHub runner.
+
+    fab keeps one global login per machine (~/.config/fab/auth.json). Logging in as the
+    SPN on a laptop silently replaces the presenter's own login, and a later
+    `fab auth login --azure-cli` does not fully undo it. Locally we use whatever
+    login is already there.
+    """
     secret = os.environ.get("SPN_CLIENT_SECRET")
-    if not secret:
+    if not secret or os.environ.get("GITHUB_ACTIONS") != "true":
         print("fab: using existing login")
         return
     # GitHub runners have no OS keyring; let fab fall back to file encryption.

@@ -23,11 +23,16 @@ feature workspace automation (rebuilt with credit, not copied).
 - fabric-cicd resolves `repository_directory` and `parameter` relative to the config file.
 - Cross-workspace dynamic values: `$workspace.<ws name>.$items.<Type>.<name>.$id|$sqlendpoint|$sqlendpointid`.
   The lakehouse is in Florida-Store-*, so Engineering/Serve parameters must use this form.
-- VariableLibrary: fabric-cicd activates the value set whose name equals the environment, so value sets are named `PPE` and `PROD`.
+- VariableLibrary: fabric-cicd activates the value set whose name equals the environment, so value sets are named after environments: `PPE`, `PROD`, `TEST`, `DEMO`. DEV uses the default (PPE storage).
 - Notebook `.py` source: write `%run <notebook>` as a plain line. `# MAGIC %run ...` gets mangled on import
   (line doubled without newline) and the Spark session dies with System_Cancelled_Session_Statements_Failed.
 - `fab import` of a `.py` notebook needs `--format .py`.
 - OneLake name-based paths work: `abfss://Florida-Store-PPE@onelake.dfs.fabric.microsoft.com/Store_LH.Lakehouse/...`.
+- `fab mkdir <ws>.Workspace` fails without a capacity: pass `-P capacityName=...` (or set default_capacity).
+- fab keeps ONE global login in ~/.config/fab/auth.json. An SPN login on the laptop replaces the user's, and
+  `fab auth login --azure-cli` does not fully undo it (AADSTS7000216 client_credentials errors). Fix: delete
+  auth.json + cache.bin and log in again. The feature script only logs in as SPN when GITHUB_ACTIONS=true.
+- Deployment pipeline rules cannot be created via API (UI only). Pipeline create/assign/deploy can.
 - PPE unpublish is on: anything in an Engineering/Serve PPE workspace that isn't in the repo gets deleted on deploy.
 
 ## Environment (no secrets here; the SPN secret lives only in GitHub environment secrets / local env vars)
@@ -45,8 +50,14 @@ feature workspace automation (rebuilt with credit, not copied).
 | Florida-Engineering-PROD | 022a840e-659e-4ea7-a281-862d1db20bd9 | fabric-cicd target |
 | Florida-Serve-PPE | 4ea93155-284e-40a3-bdcd-4094d5b4ef3d | fabric-cicd target |
 | Florida-Serve-PROD | 69f556a5-bbb8-4d56-810e-47da45dccfb1 | fabric-cicd target |
+| Florida-Engineering-DEV | 5b03ca48-d21b-48c3-983a-3ce0054ffab5 | D2 pipeline DEV stage; seeded by fabric-cicd (env DEV) |
+| Florida-Engineering-TEST | b719ae97-d676-4bc0-8f09-b62a60177785 | D2 pipeline TEST stage; fed ONLY by the deployment pipeline |
+| Florida-Store-TEST | 4ae140d4-724f-4009-b148-0072e0237c78 | Store_LH for TEST and the D3/D4 DEMO env |
+| Florida-Engineering-Demo | (created and deleted live) | D3/D4; env DEMO |
 
-These seven workspaces were created or approved for this repo. Any other workspace in the tenant is off limits.
+Deployment pipeline `Florida Engineering - Clicks`: 5229262f-ca08-410f-980b-cb793e808bb6 (DEV -> TEST).
+
+These workspaces were created or approved for this repo. Any other workspace in the tenant is off limits.
 
 ## Demo data
 Source for nb_ingest_sales: release assets of https://github.com/vlpatkosdani/semantic-model-refresh-test/releases (any release is fine).
@@ -58,4 +69,5 @@ Source for nb_ingest_sales: release assets of https://github.com/vlpatkosdani/se
 5. Workflows written. feature_maintenance tested locally as SPN: create workspace, marker, ACL, Spark, delete all OK.
    BLOCKER: SPN git/connect -> 403 FeatureNotAvailable "tenant administrator has not enabled the Git Integration
    feature". Git integration tenant settings must include the SPN (or a group it is in).
+D2/D3/D4 set up and rehearsed: see docs/demo-runbook.md. D2 rule must be created in the UI once.
 6. reset_demo.py.

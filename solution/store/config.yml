@@ -4,6 +4,7 @@ core:
   workspace:
     PPE: Florida-Store-PPE
     PROD: Florida-Store-PROD
+    TEST: Florida-Store-TEST
   repository_directory: .
   item_types_in_scope:
     - Lakehouse
@@ -12,9 +13,11 @@ publish:
   skip:
     PPE: false
     PROD: false
+    TEST: false
 
 unpublish:
   # Never let a deployment delete a lakehouse: data does not come back.
   skip:
     PPE: true
     PROD: true
+    TEST: true
