@@ -4,18 +4,25 @@ Rehearsed end to end on 17 Nov 2026 with ms-fabric-cli 1.9.0 and fabric-cicd 1.4
 
 ## Before the session (5 minutes)
 
-```powershell
-cd C:\Users\local_user\Desktop\florida-data-demo
-.\.venv\Scripts\Activate.ps1
-az login
-fab auth logout
-fab auth login --azure-cli
-fab auth status        # must say: Logged In: True, your account
-fab exists "_Florida-Engineering-Demo.Workspace"   # must be False; if True: fab rm ... -f
+All commands are for **cmd** and use full paths, so they work from any folder.
+Use the project venv's fab (1.9.0). The global `fab` on this laptop is 0.1.10 and shares the same
+login files, which causes random "Failed to get access token" errors.
+
+```bat
+set REPO=C:\Users\local_user\Desktop\florida-data-demo
+set FAB="%REPO%\.venv\Scripts\fab.exe"
+set PY="%REPO%\.venv\Scripts\python.exe"
+
+%FAB% --version
+:: must say 1.9.0
+%FAB% auth status
+:: must say Logged In: True (your account or the app registration)
+%FAB% exists "_Florida-Engineering-Demo.Workspace"
+:: must say False; if True: %FAB% rm "_Florida-Engineering-Demo.Workspace" -f
 ```
 
-If fab ever says `AuthenticationFailed ... Something went wrong while trying to acquire a token`
-and `fab auth logout` + login does not fix it, delete `~\.config\fab\auth.json` and log in again.
+If fab says `Failed to get access token` and logout + login doesn't fix it: run `%FAB% auth logout`,
+delete `%USERPROFILE%\.config\fab\auth.json` and `cache.bin`, then log in again.
 
 ## D2: Deployment pipeline (clicks, about 90 seconds)
 
@@ -50,33 +57,48 @@ Reset after rehearsal: in DEV, undo the change and deploy again (or redeploy DEV
 
 ## D3 + D4: fab CLI and fabric-cicd (code)
 
-```powershell
-# 1. Browse, create a workspace on a capacity (fab mkdir requires a capacity)
-fab ls
-fab mkdir "_Florida-Engineering-Demo.Workspace" -P capacityName=Trial-20261110T093500Z-vhNIN2bjwEuglRS2Upik6Q
-fab get "_Florida-Engineering-Demo.Workspace" -q capacityId
+Run in the same cmd window as the pre-session block (it sets `REPO`, `FAB`, `PY`).
 
-# 2. Show the configuration
-code solution\engineering\config.yml solution\engineering\parameter.yml
+```bat
+:: 1. Browse, create a workspace on a capacity (fab mkdir requires a capacity)
+%FAB% ls
+%FAB% mkdir "_Florida-Engineering-Demo.Workspace" -P capacityName=Trial-20261110T093500Z-vhNIN2bjwEuglRS2Upik6Q
+%FAB% get "_Florida-Engineering-Demo.Workspace" -q capacityId
+:: only when fab runs as the app registration: give yourself access so you can open it in Fabric
+%FAB% acl set "_Florida-Engineering-Demo.Workspace" -I caff5106-0728-4c5a-b1fe-1904c514071b -R Admin -f
 
-# 3. Deploy with Python
-python automation\scripts\deploy.py --environment DEMO --layers engineering
+:: 2. Show the configuration
+code "%REPO%\solution\engineering\config.yml" "%REPO%\solution\engineering\parameter.yml"
+
+:: 3. Deploy with Python
+%PY% "%REPO%\automation\scripts\deploy.py" --environment DEMO --layers engineering
+
+:: Show the replaced ID: Git has PPE storage...
+findstr /n "default_lakehouse" "%REPO%\solution\engineering\nb_transform_sales.Notebook\notebook-content.py"
+:: ...the deployed notebook has TEST storage
+%FAB% export "_Florida-Engineering-Demo.Workspace/nb_transform_sales.Notebook" -o "%TEMP%\demo" --format .py -f
+findstr /n "default_lakehouse" "%TEMP%\demo\nb_transform_sales.Notebook\notebook-content.py"
 ```
 
-Show the replaced ID: in the repo, `nb_transform_sales` points at Store_LH in **_Florida-Store-PPE**
-(`4d9757c7-…`). In _Florida-Engineering-Demo, open nb_transform_sales → Lakehouse pane: it now points at
-Store_LH in **_Florida-Store-TEST** (`d8bbe04d-…`). Same file, different environment, no manual edits.
-Also open vl_settings: active value set is **DEMO**.
+Expected: Git shows lakehouse `4d9757c7-…` / workspace `b64d3ac2-…` (_Florida-Store-PPE); the deployed
+notebook shows `d8bbe04d-…` / `4ae140d4-…` (_Florida-Store-TEST). Same file, different environment, no
+manual edits. In Fabric: nb_transform_sales → Lakehouse pane shows the same; vl_settings active value
+set is **DEMO**.
 
-```powershell
-# 4. Same deployment without Python
-fab deploy --config solution/engineering/config.yml --target_env DEMO -f
+```bat
+:: 4. Same deployment without Python
+%FAB% deploy --config "%REPO%\solution\engineering\config.yml" --target_env DEMO -f
 
-# 5. Clean up
-fab rm "_Florida-Engineering-Demo.Workspace" -f
+:: 5. Clean up
+%FAB% rm "_Florida-Engineering-Demo.Workspace" -f
 ```
 
-Expected runtimes: steps 3 and 4 about 15 seconds each.
+Notes:
+- `deploy.py` finds its configs from its own location, and `fab deploy` resolves item folders relative
+  to the config file. That's why full paths work from any folder.
+- `deploy.py` uses the app registration only if `SPN_CLIENT_SECRET` is set in this window, otherwise
+  your `az login`. `fab deploy` uses fab's login.
+- Expected runtimes: steps 3 and 4 about 15 seconds each.
 
 ## D5: Feature workspaces + fabric-cicd release (both, about 12 minutes)
 
