@@ -1,21 +1,76 @@
-# fabric-cicd 1.4.0 deployment config: Engineering layer.
-# Same file drives both `python automation/scripts/deploy.py` and
-# `fab deploy --config solution/engineering/config.yml --target_env PPE`.
+# =====================================================================================
+# config.yml  -  fabric-cicd deployment configuration for the ENGINEERING layer
+# =====================================================================================
+#
+# WHY THIS FILE EXISTS
+# --------------------
+# Git holds ONE copy of every item (notebooks, variable library, pipeline) in this
+# folder. The same copy must be deployed to several workspaces: PPE, PROD, a DEV
+# workspace for the deployment-pipeline demo, a throwaway DEMO workspace, ...
+# This file answers, per environment, the questions a deployment needs:
+#   - WHERE does it go?                                 -> core.workspace
+#   - WHAT is deployed?                                 -> repository_directory + item_types_in_scope
+#   - WHICH values change on the way?                   -> core.parameter (parameter.yml)
+#   - What happens to items that are no longer in Git?  -> unpublish
+#
+# Without it you would write those decisions in Python (FabricWorkspace(...) calls).
+# With it they are declarative, reviewable in a PR, and shared by every runner:
+#   - python automation/scripts/deploy.py --environment PPE      (laptop, GitHub Actions)
+#   - fab deploy --config solution/engineering/config.yml --target_env PPE
+# Both call the same engine (fab deploy uses fabric-cicd internally), so they give the
+# same result. Feature workspaces do NOT use this file: they are filled by Git sync.
+#
+# HOW A DEPLOYMENT USES IT (deploy_with_config / fab deploy, for environment X)
+# ----------------------------------------------------------------------------
+#  1. Read this file; every relative path is resolved from THIS file's folder.
+#  2. Look up core.workspace.X and resolve the workspace name to its ID.
+#     The workspace must already exist: fabric-cicd never creates workspaces.
+#  3. Scan repository_directory. Every sub-folder with a .platform file is one item
+#     (e.g. nb_transform_sales.Notebook/). Keep only item_types_in_scope.
+#  4. Load parameter.yml and apply its replacements for X to the item files IN MEMORY
+#     (the files in Git are never changed).
+#  5. Publish: create or update each item in the target workspace, matched by
+#     name + type, in a fixed order by item type (variable library before notebooks).
+#     A VariableLibrary also gets its active value set switched to the one named X.
+#  6. Unpublish (unless skip.X is true): delete items of the in-scope types that exist
+#     in the workspace but no longer exist in Git, so the workspace mirrors the branch.
+#
+# Running the same deployment twice gives the same result (it updates in place).
+#
+# WHAT IT DOES NOT DO
+# -------------------
+#   - create workspaces or set permissions            -> fab mkdir / fab acl set
+#   - set data source credentials or refresh models   -> deploy.py does that after "serve"
+#   - move data: lakehouse tables never travel with a deployment
+#
+# The environment names (PPE, PROD, ...) are free text. They only have to match
+# across this file, parameter.yml and the variable library value set names.
+# =====================================================================================
+
 core:
+  # Environment name -> target workspace (by display name).
   workspace:
-    PPE: _Florida-Engineering-PPE
-    PROD: _Florida-Engineering-PROD
-    DEV: _Florida-Engineering-DEV      # seeds the deployment pipeline demo (D2)
-    DEMO: _Florida-Engineering-Demo    # created and removed live in D3/D4
+    PPE: _Florida-Engineering-PPE       # GitHub Actions deploy-ppe (push to ppe)
+    PROD: _Florida-Engineering-PROD     # GitHub Actions deploy-prod (push to main, after approval)
+    DEV: _Florida-Engineering-DEV       # seeds the deployment pipeline demo (D2)
+    DEMO: _Florida-Engineering-Demo     # created and removed live in D3/D4
+
+  # Folder that holds the item folders, relative to this file ("." = this folder).
   repository_directory: .
+
+  # Replacement rules applied during deployment (see parameter.yml for details).
   parameter: parameter.yml
+
+  # Only these item types are published or unpublished. Anything else in the folder,
+  # or in the target workspace, is ignored.
   item_types_in_scope:
     - Notebook
     - DataPipeline
     - VariableLibrary
 
 unpublish:
-  # PPE mirrors the ppe branch exactly; PROD never loses items automatically.
+  # false = delete workspace items (of the types above) that are not in Git.
+  # PPE mirrors the ppe branch exactly; PROD, DEV and DEMO never lose items automatically.
   skip:
     PPE: false
     PROD: true

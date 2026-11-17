@@ -1,3 +1,4 @@
+# How this file works (why it exists, step-by-step deployment flow): see solution/engineering/config.yml
 # fabric-cicd 1.4.0 deployment config: Store layer (lakehouse only).
 # Feature workspaces never get this layer; they read the PPE lakehouse.
 core:

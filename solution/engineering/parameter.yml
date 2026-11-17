@@ -1,23 +1,63 @@
-# fabric-cicd 1.4.0 parameter file: Engineering layer.
+# =====================================================================================
+# parameter.yml  -  environment-specific replacements for the ENGINEERING layer
+# =====================================================================================
 #
-# Notebooks get their storage location from vl_settings (variable library),
-# so most environment values are handled by value sets, not by this file.
-# This file covers the one thing value sets can't: when a developer attaches
-# Store_LH as the default lakehouse in a feature workspace, Fabric writes the
-# PPE lakehouse and workspace GUIDs into the notebook META block.
+# WHY THIS FILE EXISTS
+# --------------------
+# Git holds ONE copy of each item, saved from the environment where it was built
+# (a feature workspace that reads PPE storage). Some of what Fabric saves is tied to
+# that environment. Example: when Store_LH is attached as a notebook's default
+# lakehouse, Fabric writes its GUIDs into the notebook file:
 #
-# The lakehouse lives in a different workspace (_Florida-Store-*), so the
-# replacement uses the cross-workspace form:
-#   $workspace.<workspace name>.$items.<type>.<item name>.$<attribute>
-# A plain $items.Lakehouse.Store_LH.$id would look in the Engineering
-# workspace and fail.
+#   # META       "default_lakehouse": "4d9757c7-...",                <- Store_LH in PPE
+#   # META       "default_lakehouse_workspace_id": "b64d3ac2-...",   <- _Florida-Store-PPE
 #
-# find_value entries are the PPE IDs: Store_LH lakehouse and _Florida-Store-PPE workspace.
-# nb_transform_sales has Store_LH (PPE) attached as default lakehouse, so these fire there.
-#   DEV  -> PPE storage (like feature workspaces)
-#   DEMO -> _Florida-Store-TEST, so the live D3/D4 demo shows a visibly different ID
+# Deployed unchanged, the PROD notebook would read PPE data. This file says, for each
+# target environment, what such values must become. It is the code equivalent of
+# deployment rules in Fabric deployment pipelines.
+#
+# HOW IT OPERATES (during a deployment to environment X; config.yml points here)
+# ----------------------------------------------------------------------------
+#  1. fabric-cicd loads the item files from Git and, for every find_replace entry:
+#  2. checks the filters (item_type, and optionally item_name / file_path);
+#  3. if the entry has a value for X, replaces EVERY occurrence of find_value in the
+#     matching files with that value. No value for X = text stays as it is in Git;
+#  4. publishes the changed content. The files in Git are never modified.
+#
+# Replacement values can be literal text or DYNAMIC variables resolved at deploy time
+# through the Fabric API, so no target GUID is ever hardcoded here:
+#   $workspace.$id                                  the target workspace's ID
+#   $workspace.<name>.$id                           another workspace's ID, by name
+#   $items.<Type>.<Name>.$id                        an item in the TARGET workspace
+#   $workspace.<ws>.$items.<Type>.<Name>.$id        an item in ANOTHER workspace
+#                                                    (also $sqlendpoint, $sqlendpointid)
+# Store_LH lives in the _Florida-Store-* workspaces, not in the Engineering workspace,
+# so this file must use the cross-workspace form. A plain $items.Lakehouse.Store_LH.$id
+# would search the Engineering workspace and fail. Referenced workspaces and items must
+# exist before the deployment runs (store is deployed before engineering).
+#
+# Keep find_value unique: GUIDs are ideal, short words could match unintended text.
+#
+# PARAMETER.YML OR VARIABLE LIBRARY?
+# ----------------------------------
+#   variable library (vl_settings): values your CODE reads at run time, e.g.
+#       notebookutils.variableLibrary.getLibrary("vl_settings").store_workspace
+#     Works with fabric-cicd AND deployment pipelines (active value set per stage).
+#   parameter.yml: values FABRIC writes into item definitions, which code can't control
+#     (default lakehouse, connection IDs, report bindings). fabric-cicd only.
+#   This solution uses both: notebooks find their data through vl_settings; this file
+#   fixes the default-lakehouse metadata.
+#
+# ENTRIES BELOW
+# -------------
+# find_value = the PPE IDs that Git contains (Store_LH, _Florida-Store-PPE).
+#   PPE, DEV -> PPE storage (DEV reads PPE like feature workspaces; effectively unchanged)
+#   PROD     -> _Florida-Store-PROD
+#   DEMO     -> _Florida-Store-TEST, so the live D3/D4 demo shows a visibly different ID
+# =====================================================================================
 
 find_replace:
+  # Default lakehouse ID in notebook metadata
   - find_value: "4d9757c7-4967-443c-a864-5abf9a439d47"
     replace_value:
       PPE: "$workspace._Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
@@ -26,6 +66,7 @@ find_replace:
       DEMO: "$workspace._Florida-Store-TEST.$items.Lakehouse.Store_LH.$id"
     item_type: "Notebook"
 
+  # Workspace ID of that lakehouse in notebook metadata
   - find_value: "b64d3ac2-7a25-4b7a-80ee-7dabc987cac9"
     replace_value:
       PPE: "$workspace._Florida-Store-PPE.$id"
