@@ -13,8 +13,7 @@
 
 # # Util_Connection_Library
 # Shared helpers. Load with `%run Util_Connection_Library` from any notebook in this workspace.
-#
-# Every environment value comes from the **vl_settings** variable library, so the same notebook
+# # Every environment value comes from the **vl_settings** variable library, so the same notebook
 # code runs in a feature workspace (default value set, reads PPE), in PPE and in PROD.
 # fabric-cicd switches the active value set to match the target environment.
 
