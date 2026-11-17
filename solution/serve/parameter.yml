@@ -1,41 +1,22 @@
 # fabric-cicd 1.4.0 parameter file: Serve layer.
 #
-# SM_Sales reads Store_LH, which lives in the Store workspace. When the model
-# is authored in a feature workspace it points at the PPE lakehouse, so the
-# committed TMDL contains PPE values. These entries swap them per environment.
+# SM_Sales is an import model that loads the Contoso parquet files straight from the
+# GitHub releases of vlpatkosdani/semantic-model-refresh-test. The M parameter DataTag
+# picks the release, so the environments differ only in data volume:
+#   PPE  -> data-1m-v1   (fast refresh while testing)
+#   PROD -> data-10m-v1  (the "real" volume)
 #
-# Which entries you need depends on how SM_Sales connects:
-#   Direct Lake on SQL endpoint -> SQL connection string + SQL endpoint ID
-#   Direct Lake on OneLake      -> workspace ID + lakehouse ID in the OneLake URL
-# Keep the pair that matches the model, delete the other.
+# Regex mode: fabric-cicd replaces only capture group 1, so the rest of the
+# expression (meta, List, DefaultValue) stays untouched.
 #
-# find_value entries are the PPE values (_Florida-Store-PPE / Store_LH). Check them against
-# solution/serve/SM_Sales.SemanticModel/definition/expressions.tmdl after the
-# model is first committed.
+# After the first deploy to a new workspace the model needs its Web data source
+# credentials set once (Anonymous) and a refresh; fabric-cicd does not set credentials.
 
 find_replace:
-  # Direct Lake on SQL endpoint
-  - find_value: "vmxp7jph42futcd3awug4hd2s4-yi5e3nrfpj5exahopwv4tb6kze.datawarehouse.fabric.microsoft.com"
+  - find_value: 'expression DataTag = "(data-[^"]+)"'
+    is_regex: "true"
     replace_value:
-      PPE: "$workspace._Florida-Store-PPE.$items.Lakehouse.Store_LH.$sqlendpoint"
-      PROD: "$workspace._Florida-Store-PROD.$items.Lakehouse.Store_LH.$sqlendpoint"
+      PPE: "data-1m-v1"
+      PROD: "data-10m-v1"
     item_type: "SemanticModel"
-
-  - find_value: "8976535b-72c1-40bb-974d-01d938ce4457"
-    replace_value:
-      PPE: "$workspace._Florida-Store-PPE.$items.Lakehouse.Store_LH.$sqlendpointid"
-      PROD: "$workspace._Florida-Store-PROD.$items.Lakehouse.Store_LH.$sqlendpointid"
-    item_type: "SemanticModel"
-
-  # Direct Lake on OneLake
-  - find_value: "b64d3ac2-7a25-4b7a-80ee-7dabc987cac9"
-    replace_value:
-      PPE: "$workspace._Florida-Store-PPE.$id"
-      PROD: "$workspace._Florida-Store-PROD.$id"
-    item_type: "SemanticModel"
-
-  - find_value: "4d9757c7-4967-443c-a864-5abf9a439d47"
-    replace_value:
-      PPE: "$workspace._Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
-      PROD: "$workspace._Florida-Store-PROD.$items.Lakehouse.Store_LH.$id"
-    item_type: "SemanticModel"
+    item_name: "SM_Sales"

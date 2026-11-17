@@ -59,6 +59,14 @@ Deployment pipeline `Florida Engineering - Clicks`: 5229262f-ca08-410f-980b-cb79
 
 These workspaces were created or approved for this repo. Any other workspace in the tenant is off limits.
 
+## Serve layer (SM_Sales, RPT_Sales)
+- Authored by Daniel, committed from _Florida Data & AI - Demo via Git integration. TMDL + PBIR.
+- SM_Sales is IMPORT mode from GitHub release parquet files (fnLoadParquet + Web.Contents), not Store_LH.
+  M parameter DataTag: PPE data-1m-v1, PROD data-10m-v1 (serve/parameter.yml, regex capture group).
+- Each newly deployed SM_Sales needs Web credentials (Anonymous) set once + a refresh; fabric-cicd can't do it.
+- Margin % already exists. Live running change in the model: Avg Order Value = DIVIDE([Sales Amount], [# Orders]).
+- RPT_Sales binds byPath ../SM_Sales.SemanticModel.
+
 ## Demo data
 Source for nb_ingest_sales: release assets of https://github.com/vlpatkosdani/semantic-model-refresh-test/releases (any release is fine).
 
