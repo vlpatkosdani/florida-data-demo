@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb_fab_only",
+    "description": "Demo of tool-specific scope: deployed by fab deploy, skipped by deploy.py"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "6e742415-838f-4454-89e7-7ac004a48616"
+  }
+}
