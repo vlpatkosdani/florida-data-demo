@@ -1,3 +1,4 @@
+# How this file works (why it exists, step-by-step deployment flow): see solution/engineering/config.yml
 # fabric-cicd 1.4.0 deployment config: Serve layer.
 # SM_Sales and RPT_Sales are authored in Fabric and committed via Git integration.
 core:

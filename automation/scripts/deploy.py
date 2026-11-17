@@ -28,6 +28,20 @@ from fabric_cicd import change_log_level, deploy_with_config
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LAYERS = ["store", "engineering", "serve"]  # deployment order: storage first, reports last
 
+# Items this script skips on top of config.yml's publish.exclude_regex.
+# `fab deploy` reads only config.yml, so it still deploys them (scope demo: nb_fab_only).
+PYTHON_ONLY_EXCLUDE = r"^nb_fab_only$"
+
+
+def exclude_override(config, environment):
+    """config_override that adds PYTHON_ONLY_EXCLUDE to the config's own exclude_regex."""
+    cfg = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
+    existing = (cfg.get("publish") or {}).get("exclude_regex")
+    if isinstance(existing, dict):  # per-environment form
+        existing = existing.get(environment)
+    pattern = f"(?:{existing})|(?:{PYTHON_ONLY_EXCLUDE})" if existing else PYTHON_ONLY_EXCLUDE
+    return {"publish": {"exclude_regex": pattern}}
+
 
 def get_credential():
     secret = os.environ.get("SPN_CLIENT_SECRET")
@@ -102,6 +116,7 @@ def main() -> int:
             config_file_path=str(config),
             environment=args.environment,
             token_credential=credential,
+            config_override=exclude_override(config, args.environment),
         )
         if layer == "serve" and not args.no_refresh:
             print(f"\n=== serve -> {args.environment}: credentials + refresh")

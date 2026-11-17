@@ -1,3 +1,4 @@
+# How parameter files work (why they exist, replacement flow, dynamic variables): see solution/engineering/parameter.yml
 # fabric-cicd 1.4.0 parameter file: Serve layer.
 #
 # SM_Sales is an import model that loads the Contoso parquet files straight from the
