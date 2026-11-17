@@ -30,7 +30,7 @@
   },
   "shared_storage": {
     "_comment": "Feature workspaces have no Store layer; they read the PPE lakehouse.",
-    "workspace": "Florida-Store-PPE",
+    "workspace": "_Florida-Store-PPE",
     "lakehouse": "Store_LH"
   }
 }

@@ -11,7 +11,7 @@ az login
 fab auth logout
 fab auth login --azure-cli
 fab auth status        # must say: Logged In: True, your account
-fab exists "Florida-Engineering-Demo.Workspace"   # must be False; if True: fab rm ... -f
+fab exists "_Florida-Engineering-Demo.Workspace"   # must be False; if True: fab rm ... -f
 ```
 
 If fab ever says `AuthenticationFailed ... Something went wrong while trying to acquire a token`
@@ -19,27 +19,27 @@ and `fab auth logout` + login does not fix it, delete `~\.config\fab\auth.json` 
 
 ## D2: Deployment pipeline (clicks, about 90 seconds)
 
-Pipeline **Florida Engineering - Clicks**: DEV = Florida-Engineering-DEV, TEST = Florida-Engineering-TEST.
+Pipeline **Florida Engineering - Clicks**: DEV = _Florida-Engineering-DEV, TEST = _Florida-Engineering-TEST.
 
 One-time setup, in the Fabric UI (rules can't be created through the API):
 1. Open the pipeline, select the **TEST** stage, then **nb_transform_sales** → **Deployment rules**.
-2. **Default lakehouse rule** → Add rule → From: the current lakehouse (Store_LH in Florida-Store-PPE)
+2. **Default lakehouse rule** → Add rule → From: the current lakehouse (Store_LH in _Florida-Store-PPE)
    → To: **Other**, then enter:
    - Lakehouse ID: `d8bbe04d-ba36-4e93-ba31-16bae9b49c59`
    - Lakehouse name: `Store_LH`
-   - Workspace ID: `4ae140d4-724f-4009-b148-0072e0237c78` (Florida-Store-TEST)
+   - Workspace ID: `4ae140d4-724f-4009-b148-0072e0237c78` (_Florida-Store-TEST)
 
    Save. The rule applies from the next deploy, so do one DEV → TEST deploy after creating it.
 
 TEST's vl_settings already has the **TEST** value set active (set once per stage; a deploy keeps it).
 
 On stage:
-1. In Florida-Engineering-DEV, open nb_transform_sales and make a visible change
+1. In _Florida-Engineering-DEV, open nb_transform_sales and make a visible change
    (e.g. add Margin % at the `# DEMO` marker). Save.
 2. Pipeline → DEV → **Compare** with TEST: nb_transform_sales shows as *Different*. Open the change review.
 3. **Deploy** to TEST, add a note.
-4. Open nb_transform_sales in TEST: the default lakehouse is Store_LH in **Florida-Store-TEST** (the rule),
-   while DEV still points at Florida-Store-PPE.
+4. Open nb_transform_sales in TEST: the default lakehouse is Store_LH in **_Florida-Store-TEST** (the rule),
+   while DEV still points at _Florida-Store-PPE.
 5. Show **Deployment history**.
 
 Talking points: rule coverage varies by item type; rules are UI-only; one pipeline per workspace set;
@@ -53,8 +53,8 @@ Reset after rehearsal: in DEV, undo the change and deploy again (or redeploy DEV
 ```powershell
 # 1. Browse, create a workspace on a capacity (fab mkdir requires a capacity)
 fab ls
-fab mkdir "Florida-Engineering-Demo.Workspace" -P capacityName=Trial-20261110T093500Z-vhNIN2bjwEuglRS2Upik6Q
-fab get "Florida-Engineering-Demo.Workspace" -q capacityId
+fab mkdir "_Florida-Engineering-Demo.Workspace" -P capacityName=Trial-20261110T093500Z-vhNIN2bjwEuglRS2Upik6Q
+fab get "_Florida-Engineering-Demo.Workspace" -q capacityId
 
 # 2. Show the configuration
 code solution\engineering\config.yml solution\engineering\parameter.yml
@@ -63,9 +63,9 @@ code solution\engineering\config.yml solution\engineering\parameter.yml
 python automation\scripts\deploy.py --environment DEMO --layers engineering
 ```
 
-Show the replaced ID: in the repo, `nb_transform_sales` points at Store_LH in **Florida-Store-PPE**
-(`4d9757c7-…`). In Florida-Engineering-Demo, open nb_transform_sales → Lakehouse pane: it now points at
-Store_LH in **Florida-Store-TEST** (`d8bbe04d-…`). Same file, different environment, no manual edits.
+Show the replaced ID: in the repo, `nb_transform_sales` points at Store_LH in **_Florida-Store-PPE**
+(`4d9757c7-…`). In _Florida-Engineering-Demo, open nb_transform_sales → Lakehouse pane: it now points at
+Store_LH in **_Florida-Store-TEST** (`d8bbe04d-…`). Same file, different environment, no manual edits.
 Also open vl_settings: active value set is **DEMO**.
 
 ```powershell
@@ -73,7 +73,7 @@ Also open vl_settings: active value set is **DEMO**.
 fab deploy --config solution/engineering/config.yml --target_env DEMO -f
 
 # 5. Clean up
-fab rm "Florida-Engineering-Demo.Workspace" -f
+fab rm "_Florida-Engineering-Demo.Workspace" -f
 ```
 
 Expected runtimes: steps 3 and 4 about 15 seconds each.

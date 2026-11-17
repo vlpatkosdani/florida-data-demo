@@ -9,9 +9,9 @@ and with code (fab CLI, fabric-cicd).
 
 ```
 solution/
-  store/        Store_LH lakehouse                     -> Florida-Store-PPE / -PROD
-  engineering/  notebooks, variable library, pipeline  -> Florida-Engineering-PPE / -PROD
-  serve/        SM_Sales, RPT_Sales                    -> Florida-Serve-PPE / -PROD
+  store/        Store_LH lakehouse                     -> _Florida-Store-PPE / -PROD
+  engineering/  notebooks, variable library, pipeline  -> _Florida-Engineering-PPE / -PROD
+  serve/        SM_Sales, RPT_Sales                    -> _Florida-Serve-PPE / -PROD
 automation/
   resources/environments/feature.json   feature workspace recipe
   scripts/                              deploy + feature maintenance (coming)

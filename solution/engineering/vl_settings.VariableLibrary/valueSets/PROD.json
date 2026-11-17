@@ -2,6 +2,6 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/variableLibrary/definition/valueSet/1.0.0/schema.json",
   "name": "PROD",
   "variableOverrides": [
-    { "name": "store_workspace", "value": "Florida-Store-PROD" }
+    { "name": "store_workspace", "value": "_Florida-Store-PROD" }
   ]
 }

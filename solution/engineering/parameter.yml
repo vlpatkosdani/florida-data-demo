@@ -6,30 +6,30 @@
 # Store_LH as the default lakehouse in a feature workspace, Fabric writes the
 # PPE lakehouse and workspace GUIDs into the notebook META block.
 #
-# The lakehouse lives in a different workspace (Florida-Store-*), so the
+# The lakehouse lives in a different workspace (_Florida-Store-*), so the
 # replacement uses the cross-workspace form:
 #   $workspace.<workspace name>.$items.<type>.<item name>.$<attribute>
 # A plain $items.Lakehouse.Store_LH.$id would look in the Engineering
 # workspace and fail.
 #
-# find_value entries are the PPE IDs: Store_LH lakehouse and Florida-Store-PPE workspace.
+# find_value entries are the PPE IDs: Store_LH lakehouse and _Florida-Store-PPE workspace.
 # nb_transform_sales has Store_LH (PPE) attached as default lakehouse, so these fire there.
 #   DEV  -> PPE storage (like feature workspaces)
-#   DEMO -> Florida-Store-TEST, so the live D3/D4 demo shows a visibly different ID
+#   DEMO -> _Florida-Store-TEST, so the live D3/D4 demo shows a visibly different ID
 
 find_replace:
   - find_value: "4d9757c7-4967-443c-a864-5abf9a439d47"
     replace_value:
-      PPE: "$workspace.Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
-      PROD: "$workspace.Florida-Store-PROD.$items.Lakehouse.Store_LH.$id"
-      DEV: "$workspace.Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
-      DEMO: "$workspace.Florida-Store-TEST.$items.Lakehouse.Store_LH.$id"
+      PPE: "$workspace._Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
+      PROD: "$workspace._Florida-Store-PROD.$items.Lakehouse.Store_LH.$id"
+      DEV: "$workspace._Florida-Store-PPE.$items.Lakehouse.Store_LH.$id"
+      DEMO: "$workspace._Florida-Store-TEST.$items.Lakehouse.Store_LH.$id"
     item_type: "Notebook"
 
   - find_value: "b64d3ac2-7a25-4b7a-80ee-7dabc987cac9"
     replace_value:
-      PPE: "$workspace.Florida-Store-PPE.$id"
-      PROD: "$workspace.Florida-Store-PROD.$id"
-      DEV: "$workspace.Florida-Store-PPE.$id"
-      DEMO: "$workspace.Florida-Store-TEST.$id"
+      PPE: "$workspace._Florida-Store-PPE.$id"
+      PROD: "$workspace._Florida-Store-PROD.$id"
+      DEV: "$workspace._Florida-Store-PPE.$id"
+      DEMO: "$workspace._Florida-Store-TEST.$id"
     item_type: "Notebook"
