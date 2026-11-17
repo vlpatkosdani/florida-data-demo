@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "zz_scratch",
+    "description": "Demo of config-level exclusion: never deployed by fab deploy or deploy.py"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "26f8b0ec-05cc-4e4b-ab9e-e66f258a5353"
+  }
+}

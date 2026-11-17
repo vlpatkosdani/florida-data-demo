@@ -38,6 +38,8 @@ feature workspace automation (rebuilt with credit, not copied).
   `fab auth login --azure-cli` does not fully undo it (AADSTS7000216 client_credentials errors). Fix: delete
   auth.json + cache.bin and log in again. The feature script only logs in as SPN when GITHUB_ACTIONS=true.
 - Deployment pipeline rules cannot be created via API (UI only). Pipeline create/assign/deploy can.
+- Item selection: folders with .platform -> item_types_in_scope -> publish.exclude_regex ("^zz_", both tools)
+  -> deploy.py's PYTHON_ONLY_EXCLUDE ("^nb_fab_only$", via config_override). Excluded items are never orphans.
 - PPE unpublish is on: anything in an Engineering/Serve PPE workspace that isn't in the repo gets deleted on deploy.
 
 ## Environment (no secrets here; the SPN secret lives only in GitHub environment secrets / local env vars)

@@ -85,9 +85,17 @@ notebook shows `d8bbe04d-…` / `4ae140d4-…` (_Florida-Store-TEST). Same file,
 manual edits. In Fabric: nb_transform_sales → Lakehouse pane shows the same; vl_settings active value
 set is **DEMO**.
 
+Scope beat: the folder has 6 items, the workspace now has 4. `zz_scratch` is excluded by `config.yml`
+(`publish.exclude_regex: "^zz_"`); `nb_fab_only` is excluded by deploy.py's own rule (`PYTHON_ONLY_EXCLUDE`).
+
 ```bat
+%FAB% ls "_Florida-Engineering-Demo.Workspace"
+:: 3 notebooks + vl_settings
+
 :: 4. Same deployment without Python
 %FAB% deploy --config "%REPO%\solution\engineering\config.yml" --target_env DEMO -f
+%FAB% ls "_Florida-Engineering-Demo.Workspace"
+:: nb_fab_only appeared (fab reads only config.yml); zz_scratch is still missing (config excludes it for every tool)
 
 :: 5. Clean up
 %FAB% rm "_Florida-Engineering-Demo.Workspace" -f

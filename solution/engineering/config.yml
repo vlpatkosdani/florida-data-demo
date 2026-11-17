@@ -68,6 +68,19 @@ core:
     - DataPipeline
     - VariableLibrary
 
+publish:
+  # WHICH ITEMS ARE DEPLOYED
+  #  1. Every folder with a .platform file is an item; name + type come from that file.
+  #  2. Only item_types_in_scope (above) are kept.
+  #  3. Items whose NAME matches exclude_regex are skipped (both tools read this file).
+  #     zz_scratch.Notebook is never deployed. Git integration ignores this file, so it
+  #     still appears in Git-synced (feature) workspaces.
+  #  4. deploy.py can narrow the scope further for itself (PYTHON_ONLY_EXCLUDE in
+  #     automation/scripts/deploy.py): nb_fab_only.Notebook is deployed by `fab deploy`
+  #     but skipped by deploy.py, and therefore by GitHub Actions (PPE, PROD).
+  # Excluded items are not "orphans": unpublish never deletes an item that exists in Git.
+  exclude_regex: "^zz_"
+
 unpublish:
   # false = delete workspace items (of the types above) that are not in Git.
   # PPE mirrors the ppe branch exactly; PROD, DEV and DEMO never lose items automatically.
