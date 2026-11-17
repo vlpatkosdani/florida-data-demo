@@ -14,6 +14,7 @@
 # Welcome to your new notebook
 # Type here in the cell editor to add code!
 print("Hello Florida!")
+print("Hello Budapest!")
 
 # METADATA ********************
 
