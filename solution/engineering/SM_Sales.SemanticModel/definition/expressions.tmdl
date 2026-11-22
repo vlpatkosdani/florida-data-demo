@@ -1,0 +1,32 @@
+/// Release tag of the data to load: data-1m-v1 or data-10m-v1
+expression DataTag = "data-1m-v1" meta [IsParameterQuery=true, List={"data-1m-v1", "data-10m-v1"}, DefaultValue="data-1m-v1", Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 51a5e502-ea90-4d89-b63e-71f40e319111
+
+	annotation PBI_ResultType = Text
+
+/// Loads one Parquet file from the GitHub release named by DataTag.
+/// The base URL is a static literal and everything dynamic is in RelativePath,
+/// so the service can refresh it without a dynamic data source error.
+/// Timestamp columns arrive as UTC datetimezone; the zone is dropped so dates never shift.
+expression fnLoadParquet =
+		(FileName as text) as table =>
+		let
+		    Source = Parquet.Document(
+		        Binary.Buffer(
+		            Web.Contents(
+		                "https://github.com",
+		                [RelativePath = "vlpatkosdani/semantic-model-refresh-test/releases/download/" & DataTag & "/" & FileName]
+		            )
+		        )
+		    ),
+		    ZoneColumns = Table.SelectRows(Table.Schema(Source), each [Kind] = "datetimezone")[Name],
+		    RemovedZones = Table.TransformColumns(
+		        Source,
+		        List.Transform(ZoneColumns, (c) => {c, each if _ = null then null else DateTimeZone.RemoveZone(_), type datetime})
+		    )
+		in
+		    RemovedZones
+	lineageTag: 0d6f3c1e-8a52-4b7e-9c41-2f5b8e7a9d10
+
+	annotation PBI_ResultType = Function
+
